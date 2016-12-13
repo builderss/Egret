@@ -75,3 +75,61 @@ class Display extends egret.DisplayObjectContainer{
         }
         */
     }//drawGrid              
+
+class MyGrid extends egret.DisplayObjectContainer{
+    public constructor(){
+        super();
+        this.drawGrid();
+    }
+    private drawGrid(){
+        //init container
+        var container: egret.DisplayObjectContainer = new egret.DisplayObjectContainer();
+        container.x = 200;
+        container.y = 200;
+        this.addChild(container);
+
+        //add circle to container
+        var circle: egret.Shape = new egret.Shape();
+        circle.graphics.beginFill(0xff0000);
+        circle.graphics.drawCircle(25,25,25);
+        circle.graphics.endFill();
+        circle.scrollRect = new egret.Rectangle(0, 0, 200, 50);
+        circle.cacheAsBitmap = true;
+        container.addChild(circle);      
+
+        //init btnleft
+        var btnLeft: egret.Shape = new egret.Shape();
+        btnLeft.graphics.beginFill(0xcccc01);
+        btnLeft.graphics.drawRect(0, 0, 50, 50);
+        btnLeft.graphics.endFill();
+        btnLeft.x = 50;
+        btnLeft.y = 100;
+        this.addChild(btnLeft);
+        btnLeft.touchEnabled = true;
+        btnLeft.addEventListener(egret.TouchEvent.TOUCH_TAP, onScroll, this);       
+
+        //init btnRight
+        var btnRight: egret.Shape = new egret.Shape();
+        btnRight.graphics.beginFill(0x01cccc);
+        btnRight.graphics.drawRect(0,0,50,50);
+        btnRight.graphics.endFill();
+        btnRight.x = 150;
+        btnRight.y = 100;
+        this.addChild(btnRight);
+        btnRight.touchEnabled = true;
+        btnRight.addEventListener(egret.TouchEvent.TOUCH_TAP, onScroll, this);
+
+        function onScroll(e: egret.TouchEvent): void {
+            var rect: egret.Rectangle = circle.scrollRect;
+            switch (e.currentTarget) {
+                case btnLeft:
+                    rect.x += 20;
+                    break;
+                case btnRight:
+                    rect.x -= 20;
+                    break;
+            } 
+            circle.scrollRect = rect
+        }
+    }
+}
