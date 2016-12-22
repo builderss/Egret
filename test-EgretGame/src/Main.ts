@@ -132,33 +132,6 @@ class Main extends egret.DisplayObjectContainer {
         textfield.textFlow = textFlow;
     }
 
-    /*
-    private star:egret.Bitmap;
-    private speed:number = 0.05;
-    private timeOnEnterFrame:number = 0;
-
-    private onLoad(event:egret.Event) {
-        var star:egret.Bitmap = new egret.Bitmap();
-        star.texture = RES.getRes("egret_icon_png");
-        this.addChild(star);
-        this.star = star;
-        this.addEventListener(egret.Event.ENTER_FRAME,this.onEnterFrame,this);
-        this.timeOnEnterFrame = egret.getTimer();
-    }
-
-    private  onEnterFrame(e:egret.Event){  
-        var now = egret.getTimer();
-        var time = this.timeOnEnterFrame;
-        var pass = now - time;
-        console.log("onEnterFrame: ", (1000 / pass).toFixed(5));
-
-        this.star.x += this.speed*pass;
-        this.timeOnEnterFrame = egret.getTimer();
-        if(this.star.x > 300)
-            this.removeEventListener(egret.Event.ENTER_FRAME,this.onEnterFrame,this);
-    }
-    */
-
 }
 
 
