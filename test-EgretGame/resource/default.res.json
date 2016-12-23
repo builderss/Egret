@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,egret_icon_png,description_json,star_png",
+			"keys": "bg_jpg,egret_icon_png,description_json,star_png,01_png,02_png",
 			"name": "preload"
 		}
 	],
@@ -30,6 +30,16 @@
 			"url": "assets/star.png",
 			"type": "image",
 			"name": "star_png"
+		},
+		{
+			"name": "01_png",
+			"type": "image",
+			"url": "map/01.png"
+		},
+		{
+			"name": "02_png",
+			"type": "image",
+			"url": "map/02.png"
 		}
 	]
 }
