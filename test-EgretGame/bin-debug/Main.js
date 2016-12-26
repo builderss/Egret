@@ -36,7 +36,7 @@ var Main = (function (_super) {
     p.onAddToStage = function (event) {
         //加载地图资源
         /*初始化资源加载路径*/
-        this.url = "resource/map/test1.tmx";
+        this.url = "resource/map/house.tmx";
         /*初始化请求*/
         this.request = new egret.HttpRequest();
         /*监听资源加载完成事件*/
@@ -58,10 +58,11 @@ var Main = (function (_super) {
         /*获取到地图数据*/
         var data = egret.XML.parse(event.currentTarget.response);
         /*初始化地图*/
-        var tmxTileMap = new tiled.TMXTilemap(2000, 2000, data, this.url);
-        tmxTileMap.render();
+        var Map = new tiled.TMXTilemap(2000, 2000, data, this.url);
+        this.tmxTileMap = Map;
+        this.tmxTileMap.render();
         /*将地图添加到显示列表*/
-        this.addChild(tmxTileMap);
+        this.addChild(this.tmxTileMap);
     };
     /**
      * 配置文件加载完成,开始预加载preload资源组。
@@ -121,9 +122,50 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        //var _myGrid:MyGrid = new MyGrid();
-        //this.addChild(_myGrid);     
-        this.touchAndMove();
+        // var houseObj:tiled.TMXObjectGroup[] = this.tmxTileMap.getObjects();
+        //var singleObj:tiled.TMXObject = houseObj[0].getObjectById(9);
+        var houseLayer = this.tmxTileMap.getLayers();
+        var singleLayer = houseLayer[2];
+        var testSprit = singleLayer.getTile;
+        console.log(singleLayer.name);
+        //console.log(singleObj.name);
+        //画一个红色的圆
+        var circle = new GamePlayer();
+        circle.graphics.beginFill(0xff0000);
+        circle.graphics.drawCircle(25, 25, 10);
+        circle.graphics.endFill();
+        this.addChild(circle);
+        //设定2个偏移量
+        var offsetX;
+        var offsetY;
+        //给圆增加点击事件
+        circle.touchEnabled = true;
+        circle.addEventListener(egret.TouchEvent.TOUCH_BEGIN, startMove, this);
+        //手指离开屏幕，触发 stopMove 方法
+        circle.addEventListener(egret.TouchEvent.TOUCH_END, stopMove, this);
+        function startMove(e) {
+            //计算手指和圆形的距离
+            offsetX = e.stageX - circle.x;
+            offsetY = e.stageY - circle.y;
+            //手指在屏幕上移动，会触发 onMove 方法
+            this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
+        }
+        function stopMove(e) {
+            console.log(22);
+            //手指离开屏幕，移除手指移动的监听
+            this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
+        }
+        function onMove(e) {
+            //通过计算手指在屏幕上的位置，计算当前对象的坐标，达到跟随手指移动的效果
+            circle.x = e.stageX - offsetX;
+            circle.y = e.stageY - offsetY;
+            //检测是否碰撞
+            var isHit = singleLayer.hitTestPoint(circle.x, circle.y, true);
+            console.log("碰撞结果" + isHit);
+            circle.isHit = isHit;
+            circle.addEventListener(LocationEvent.LOCATE, this.locationEvent, this);
+            circle.order();
+        }
     };
     /**
      * 切换描述内容
@@ -132,113 +174,21 @@ var Main = (function (_super) {
     p.changeDescription = function (textfield, textFlow) {
         textfield.textFlow = textFlow;
     };
-    p.touchAndMove = function () {
-        var container = new egret.DisplayObjectContainer();
-        container.x = 200;
-        container.y = 200;
-        this.addChild(container);
-        //画一个红色的圆，添加到 container 中
-        var circle = new egret.Shape();
-        circle.graphics.beginFill(0xff0000);
-        circle.graphics.drawCircle(25, 25, 25);
-        circle.graphics.endFill();
-        container.addChild(circle);
-        //给圆增加触碰事件
-        circle.touchEnabled = true;
-        //点击
-        circle.addEventListener(egret.TouchEvent.TOUCH_TAP, onClick, this);
-        function onClick() {
-            //把舞台左上角的坐标(0,0)转换为 container 内部的坐标
-            var targetPoint = container.globalToLocal(0, 0);
-            //重新定位圆，可以看到圆形移到了屏幕的左上角
-            circle.x = targetPoint.x;
-            circle.y = targetPoint.y;
-            //移动
-            //设定2个偏移量
-            var offsetX;
-            var offsetY;
-            //手指离开屏幕，触发 stopMove 方法
-            circle.addEventListener(egret.TouchEvent.TOUCH_BEGIN, startMove, this);
-            circle.addEventListener(egret.TouchEvent.TOUCH_END, stopMove, this);
-            circle.addEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
-            function startMove(e) {
-                //计算手指和圆形的距离
-                offsetX = e.stageX - circle.x;
-                offsetY = e.stageY - circle.y;
-                //手指在屏幕上移动，会触发 onMove 方法
-            }
-            function stopMove(e) {
-                console.log(22);
-                //手指离开屏幕，移除手指移动的监听
-                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
-            }
-            function onMove(e) {
-                //通过计算手指在屏幕上的位置，计算当前对象的坐标，达到跟随手指移动的效果
-                circle.x = e.stageX - offsetX;
-                circle.y = e.stageY - offsetY;
-            }
+    p.locationEvent = function (evt) {
+        /*
+        //解决方案1：位置检测
+        if (evt._player_x > 100){
+            console.log("", evt._player_x);
+            console.log("", evt._player_y)
         }
+        */
+        //解决方案2 ：图层碰撞检测：待商榷
+        if (evt.isHIT == true) {
+            console.log("there is a door");
+        }
+        console.log("this is a test");
     };
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');
-var startTickerTest = (function (_super) {
-    __extends(startTickerTest, _super);
-    function startTickerTest() {
-        _super.call(this);
-        this.speed = 0.05;
-        this.timeOnEnterFrame = 0;
-        this.touchAndMove();
-    }
-    var d = __define,c=startTickerTest,p=c.prototype;
-    p.touchAndMove = function () {
-        var container = new egret.DisplayObjectContainer();
-        container.x = 200;
-        container.y = 200;
-        this.addChild(container);
-        //画一个红色的圆，添加到 container 中
-        var circle = new egret.Shape();
-        circle.graphics.beginFill(0xff0000);
-        circle.graphics.drawCircle(25, 25, 25);
-        circle.graphics.endFill();
-        container.addChild(circle);
-        //给圆增加触碰事件
-        circle.touchEnabled = true;
-        //点击
-        circle.addEventListener(egret.TouchEvent.TOUCH_TAP, onClick, this);
-        function onClick() {
-            //把舞台左上角的坐标(0,0)转换为 container 内部的坐标
-            var targetPoint = container.globalToLocal(0, 0);
-            //重新定位圆，可以看到圆形移到了屏幕的左上角
-            circle.x = targetPoint.x;
-            circle.y = targetPoint.y;
-            //移动
-            //设定2个偏移量
-            var offsetX;
-            var offsetY;
-            //手指离开屏幕，触发 stopMove 方法
-            circle.addEventListener(egret.TouchEvent.TOUCH_BEGIN, startMove, this);
-            circle.addEventListener(egret.TouchEvent.TOUCH_END, stopMove, this);
-            circle.addEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
-            function startMove(e) {
-                //计算手指和圆形的距离
-                offsetX = e.stageX - circle.x;
-                offsetY = e.stageY - circle.y;
-                //手指在屏幕上移动，会触发 onMove 方法
-            }
-            function stopMove(e) {
-                console.log(22);
-                //手指离开屏幕，移除手指移动的监听
-                this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, onMove, this);
-            }
-            function onMove(e) {
-                //通过计算手指在屏幕上的位置，计算当前对象的坐标，达到跟随手指移动的效果
-                circle.x = e.stageX - offsetX;
-                circle.y = e.stageY - offsetY;
-            }
-        }
-    };
-    return startTickerTest;
-}(egret.DisplayObjectContainer));
-egret.registerClass(startTickerTest,'startTickerTest');
 //# sourceMappingURL=Main.js.map

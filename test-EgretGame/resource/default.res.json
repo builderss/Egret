@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,egret_icon_png,description_json,star_png,01_png,02_png",
+			"keys": "bg_jpg,egret_icon_png,description_json,star_png,tilesheet_png,player_png",
 			"name": "preload"
 		}
 	],
@@ -32,14 +32,14 @@
 			"name": "star_png"
 		},
 		{
-			"name": "01_png",
+			"name": "tilesheet_png",
 			"type": "image",
-			"url": "map/01.png"
+			"url": "map/tilesheet.png"
 		},
 		{
-			"name": "02_png",
+			"name": "player_png",
 			"type": "image",
-			"url": "map/02.png"
+			"url": "assets/player.png"
 		}
 	]
 }

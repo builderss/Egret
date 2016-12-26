@@ -11,6 +11,7 @@ var game_file_list = [
 	"libs/modules/tiled/tiled.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/Player.js",
 	//----auto game_file_list end----
 ];
 
@@ -45,7 +46,7 @@ egret_native.egretStart = function () {
         //----auto option start----
 		entryClassName: "Main",
 		frameRate: 30,
-		scaleMode: "showAll",
+		scaleMode: "noScale",
 		contentWidth: 640,
 		contentHeight: 1136,
 		showPaintRect: false,
